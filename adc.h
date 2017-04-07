@@ -15,6 +15,7 @@
 
 void adc_init();
 uint8_t adc_read_single();
+uint8_t adc_read_10();
 uint8_t adc_read_avg(uint8_t amount);
 uint8_t adc_read_cont();
 

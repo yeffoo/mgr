@@ -24,9 +24,23 @@ uint8_t adc_read_single() {
 	return ret;
 }
 
+uint8_t adc_read_10() {
+	uint8_t ret;
+	uint16_t avg = 0;
+
+	uint8_t i;
+	for(i=0; i<10; i++) {
+		avg += adc_read_single();
+	}
+
+	ret = avg / 10;
+
+	return ret;
+}
+
 uint8_t adc_read_avg(uint8_t amount) {
 	uint8_t ret;
-	uint16_t avg;
+	uint16_t avg = 0;
 
 	uint8_t i;
 	for(i=0; i<amount; i++) {
