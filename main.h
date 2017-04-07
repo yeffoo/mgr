@@ -18,7 +18,4 @@
 #define REL3 PC1
 #define REL4 PC0
 
-#define AIN1 PA1
-#define AIN2 PA0
-
 #endif /* MAIN_H_ */

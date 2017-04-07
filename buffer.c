@@ -7,7 +7,10 @@
 
 #include "buffer.h"
 
-/*void put_in_buffer1( uint8_t data ) {
+uint8_t buffer1[BUFFER1_SIZE];
+uint8_t	buffer1_head = 0, buffer1_tail = 0;
+
+void put_in_buffer1( uint8_t data ) {
 	buffer1[buffer1_head] = data;
 	if( ++buffer1_head >= BUFFER1_SIZE )
 		buffer1_head = 0;
@@ -24,9 +27,12 @@ uint8_t get_from_buffer1( void ) {
 		buffer1_tail = 0;
 
 	return data;
-}*/
+}
 
-/*void put_in_buffer2( uint8_t data ) {
+uint8_t buffer2[BUFFER2_SIZE];
+uint8_t	buffer2_head = 0, buffer2_tail = 0;
+
+void put_in_buffer2( uint8_t data ) {
 	buffer2[buffer2_head] = data;
 	if( ++buffer2_head >= BUFFER2_SIZE )
 		buffer2_head = 0;
@@ -43,4 +49,4 @@ uint8_t get_from_buffer2( void ) {
 		buffer2_tail = 0;
 
 	return data;
-}*/
+}
