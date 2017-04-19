@@ -6,10 +6,13 @@
  */
 
 #include "main.h"
+#include "string.h"
 
 #include "uart.h"
 #include "buffer.h"
 #include "adc.h"
+
+// 97 1240 1343 1111 0010 4307 1987
 
 uint8_t rel1_flag, rel2_flag, rel3_flag, rel4_flag;
 
@@ -34,6 +37,7 @@ void zmien_stan_przekaznikow() {
 }
 
 volatile uint16_t flag_1ms, flag_1s;
+
 void timer0_init() {
 	TCCR0A |= (1 << COM0A1); // Clear OC0A on Compare Match
 	TCCR0A |= (1 << WGM01); // CTC
@@ -41,6 +45,19 @@ void timer0_init() {
 	TIMSK0 |= (1 << OCIE0A); // Compare interrupt
 	OCR0A = 125;
 }
+
+uint8_t data[8];
+char relcmp[64];
+volatile uint8_t buf[64];
+char relon1[] = "RELON1";
+char reloff1[] = "RELOFF1";
+char relon2[] = "RELON2";
+char reloff2[] = "RELOFF2";
+char relon3[] = "RELON3";
+char reloff3[] = "RELOFF3";
+char relon4[] = "RELON4";
+char reloff4[] = "RELOFF4";
+uint8_t i = 0, cnt;
 
 int main() {
 	DDRC |= (1 << REL4) | (1 << REL3) | (1 << REL2) | (1 << REL1);
@@ -54,13 +71,58 @@ int main() {
 
 	uint8_t pomiar;
 
+
 	while(1) {
+
+		//i = 0;
+
+		while ( available_bufferRX1() ) {
+			uint8_t tmp;
+			tmp = get_from_bufferRX1();
+			if( tmp != '\n' ) {
+				relcmp[i] = tmp;
+				uart0_send(relcmp[i]);
+				i++;
+				//break;
+			}
+			else {
+				relcmp[i] = '\0';
+				i = 0;
+				break;
+			}
+		}
 
 		if(flag_1ms) {
 			flag_1ms = 0;
 			flag_1s++;
-			while(available_buffer2()) {
-				switch(get_from_buffer2()) {
+
+			if(strcmp(relcmp, relon1) == 0) {
+				PORTC |= (1 << REL1);
+			}
+			else if(strcmp(relcmp, reloff1) == 0) {
+				PORTC &= ~(1 << REL1);
+			}
+			else if(strcmp(relcmp, relon2) == 0) {
+				PORTC |= (1 << REL2);
+			}
+			else if(strcmp(relcmp, reloff2) == 0) {
+				PORTC &= ~(1 << REL2);
+			}
+			else if(strcmp(relcmp, relon3) == 0) {
+				PORTC |= (1 << REL3);
+			}
+			else if(strcmp(relcmp, reloff3) == 0) {
+				PORTC &= ~(1 << REL3);
+			}
+			else if(strcmp(relcmp, relon4) == 0) {
+				PORTC |= (1 << REL4);
+			}
+			else if(strcmp(relcmp, reloff4) == 0) {
+				PORTC &= ~(1 << REL4);
+			}
+
+/*			while(available_bufferRX0()) {
+				switch(get_from_bufferRX0()) {
 					case 0x01:
 						PORTC ^= (1 << REL1);
 					break;
@@ -74,27 +136,34 @@ int main() {
 						PORTC ^= (1 << REL4);
 					break;
 				}
-			}
+			}*/
+
 		}
 
 		if( flag_1s >=1000 ) {
 			flag_1s = 0;
-			pomiar = adc_read_single(AIN1);
-			put_in_buffer1(pomiar);
-			pomiar = adc_read_single(AIN2);
-			put_in_buffer1(pomiar);
-			while(available_buffer1()) {
-				uart0_send(get_from_buffer1());
-			}
+//			pomiar = adc_read_single(AIN1);
+//			put_in_bufferTX0(pomiar);
+//			pomiar = adc_read_single(AIN2);
+//			put_in_bufferTX0(pomiar);
+///*			while(available_bufferTX0()) {
+//				uart0_send(get_from_bufferTX0());
+//			}*/
+			cnt = 0;
 		}
 	}
 }
+
 ISR(USART1_RX_vect) {
-	//put_in_buffer1(UDR1);
+	put_in_bufferRX1(UDR1);
 }
 
+
 ISR(USART0_RX_vect) {
-	put_in_buffer2(UDR0);
+/*	while(UDR0 != '\n') {
+		put_in_bufferTX1(UDR0);
+	}*/
+	put_in_bufferRX0(UDR0);
 }
 
 ISR(TIMER0_COMPA_vect) {
