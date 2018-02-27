@@ -7,6 +7,9 @@
 
 #include "uart.h"
 
+/*
+FTDI
+ */
 void uart0_conf(unsigned int baud) {
 	UCSR0B |= (1 << TXEN0) | (1 << RXEN0);
 	UCSR0B |= (1 << RXCIE0);
@@ -33,6 +36,9 @@ void uart0_puts(char *data) {
 		uart0_send(*data++);
 }
 
+/*
+ESP8266
+ */
 void uart1_conf(unsigned int baud) {
 	UCSR1B |= (1 << TXEN1) | (1 << RXEN1);
 	UCSR1B |= (1 << RXCIE1);

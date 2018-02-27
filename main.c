@@ -57,7 +57,7 @@ char relon3[] = "RELON3";
 char reloff3[] = "RELOFF3";
 char relon4[] = "RELON4";
 char reloff4[] = "RELOFF4";
-uint8_t i = 0, cnt;
+long i = 0, cnt;
 
 int main() {
 	DDRC |= (1 << REL4) | (1 << REL3) | (1 << REL2) | (1 << REL1);
@@ -69,7 +69,7 @@ int main() {
 
 	sei();
 
-	uint8_t pomiar;
+	uint8_t pomiar, temp;
 
 
 	while(1) {
@@ -79,9 +79,10 @@ int main() {
 		while ( available_bufferRX1() ) {
 			uint8_t tmp;
 			tmp = get_from_bufferRX1();
+			uart0_send(tmp);
 			if( tmp != '\n' ) {
 				relcmp[i] = tmp;
-				uart0_send(relcmp[i]);
+				//uart0_send(relcmp[i]);
 				i++;
 				//break;
 			}
@@ -91,7 +92,18 @@ int main() {
 				break;
 			}
 		}
-
+		//
+//		if ( available_bufferRX1() ) {
+//			uint8_t tmp;
+//			tmp = get_from_bufferRX1();
+//			uart0_send(tmp);
+//		}
+		if ( available_bufferRX0() ) {
+			uint8_t tmp;
+			tmp = get_from_bufferRX0();
+			uart1_send(tmp);
+		}
+//
 		if(flag_1ms) {
 			flag_1ms = 0;
 			flag_1s++;
@@ -120,42 +132,50 @@ int main() {
 			else if(strcmp(relcmp, reloff4) == 0) {
 				PORTC &= ~(1 << REL4);
 			}
-
-/*			while(available_bufferRX0()) {
-				switch(get_from_bufferRX0()) {
-					case 0x01:
-						PORTC ^= (1 << REL1);
-					break;
-					case 0x02:
-						PORTC ^= (1 << REL2);
-					break;
-					case 0x03:
-						PORTC ^= (1 << REL3);
-					break;
-					case 0x04:
-						PORTC ^= (1 << REL4);
-					break;
-				}
-			}*/
-
 		}
+//
+///*			while(available_bufferRX0()) {
+//				switch(get_from_bufferRX0()) {
+//					case 0x01:
+//						PORTC ^= (1 << REL1);
+//					break;
+//					case 0x02:
+//						PORTC ^= (1 << REL2);
+//					break;
+//					case 0x03:
+//						PORTC ^= (1 << REL3);
+//					break;
+//					case 0x04:
+//						PORTC ^= (1 << REL4);
+//					break;
+//				}
+//			}*/
+//
+//		}
 
 		if( flag_1s >=1000 ) {
 			flag_1s = 0;
-//			pomiar = adc_read_single(AIN1);
+			pomiar = adc_read_single(AIN1);
+			uart0_send(pomiar);
+			uart1_send(pomiar);
 //			put_in_bufferTX0(pomiar);
-//			pomiar = adc_read_single(AIN2);
+			pomiar = adc_read_single(AIN2);
+			uart0_send(pomiar);
+			uart1_send(pomiar);
 //			put_in_bufferTX0(pomiar);
-///*			while(available_bufferTX0()) {
-//				uart0_send(get_from_bufferTX0());
-//			}*/
+//			while(available_bufferTX0()) {
+//				temp = get_from_bufferTX0();
+////				uart0_send(get_from_bufferTX0());
+//				uart0_send(temp);
+//				uart1_send(temp); // Wysyla do modulu ESP8266
+//			}
 			cnt = 0;
 		}
 	}
 }
 
 ISR(USART1_RX_vect) {
-	put_in_bufferRX1(UDR1);
+//	put_in_bufferRX1(UDR1);
 }
 
 
@@ -163,7 +183,7 @@ ISR(USART0_RX_vect) {
 /*	while(UDR0 != '\n') {
 		put_in_bufferTX1(UDR0);
 	}*/
-	put_in_bufferRX0(UDR0);
+//	put_in_bufferRX0(UDR0);
 }
 
 ISR(TIMER0_COMPA_vect) {

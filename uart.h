@@ -11,9 +11,9 @@
 #include "main.h"
 
 #define FOSC 8000000// Clock Speed
-#define BAUD0 9600
+#define BAUD0 115200
 #define MYUBRR0 FOSC/16/BAUD0-1
-#define BAUD1 9600
+#define BAUD1 115200
 #define MYUBRR1 FOSC/16/BAUD1-1
 
 void uart0_conf(unsigned int baud);

@@ -10,8 +10,9 @@
 // Conversion time: 13-260 us
 // Sampling frequency: 50-200 kHz
 void adc_init() {
+	DDRC &= ~( (1 << PA1) | (1 << PA0) );
 	ADMUX |= (1 << REFS0); // Vref = AVCC
-	//ADCSRA |= (1 << ADIE); // Interrupt
+//	ADCSRA |= (1 << ADIE); // Interrupt
 	ADCSRA |= (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0); // Prescaler: 128, sampling frequency: 62,5 kHz
 	ADCSRA |= (1 << ADEN); // Turn on ADC
 }
@@ -28,6 +29,7 @@ uint8_t adc_read_single(uint8_t mux) {
 
 	return ret;
 }
+
 
 uint8_t adc_read_10(uint8_t mux) {
 	uint8_t ret;
