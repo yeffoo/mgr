@@ -12,7 +12,8 @@
 
 // BufferS for UART0
 
-#define BUFFER0_SIZE	64
+#define UART0_BUFFER_SIZE	32
+#define UART0_BUFFER_MASK (UART0_BUFFER_SIZE - 1)
 
 void put_in_bufferTX0( uint8_t data );
 uint8_t available_bufferTX0( void );
@@ -24,7 +25,8 @@ uint8_t get_from_bufferRX0( void );
 
 // Buffer for UART1
 
-#define BUFFER1_SIZE	64
+#define UART1_BUFFER_SIZE	32
+#define UART1_BUFFER_MASK (UART1_BUFFER_SIZE - 1)
 
 void put_in_bufferTX1( uint8_t data );
 uint8_t available_bufferTX1( void );

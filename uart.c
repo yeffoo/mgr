@@ -32,7 +32,10 @@ uint8_t uart0_receive( void ) {
 }
 
 void uart0_puts(char *data) {
-	while (*data)
+//	register char c;
+//	while ((c = *data++))
+//		uart0_send(c);
+	while ( *data )
 		uart0_send(*data++);
 }
 
