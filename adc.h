@@ -14,9 +14,9 @@
 #define AIN2 0x00 // PA0
 
 void adc_init();
-uint8_t adc_read_single(uint8_t mux);
-uint8_t adc_read_10(uint8_t mux);
-uint8_t adc_read_avg(uint8_t mux, uint8_t amount);
-uint8_t adc_read_cont(uint8_t mux);
+uint16_t adc_read_single(uint8_t mux);
+uint16_t adc_read_10(uint8_t mux);
+uint16_t adc_read_avg(uint8_t mux, uint8_t amount);
+uint16_t adc_read_cont(uint8_t mux);
 
 #endif /* ADC_H_ */
